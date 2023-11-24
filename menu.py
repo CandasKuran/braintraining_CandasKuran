@@ -8,6 +8,7 @@ import tkinter as tk
 import geo01
 import info02
 import info05
+import displayResult
 
 # exercises array
 a_exercise=["geo01", "info02", "info05"]
@@ -31,7 +32,7 @@ def display_result(event):
 # Main window
 window = tk.Tk()
 window.title("Training, entrainement cérébral")
-window.geometry("1100x900")
+window.geometry("1100x550")
 
 # color définition
 rgb_color = (139, 201, 194)
@@ -57,7 +58,7 @@ for ex in range(len(a_exercise)):
 # Buttons, display results & quit
 btn_display = tk.Button(window, text="Display results", font=("Arial", 15))
 btn_display.grid(row=1+ 2*len(a_exercise)//3 , column=1)
-btn_display.bind("<Button-1>",lambda e: display_result(e))
+btn_display.bind("<Button-1>",lambda e: displayResult.create_result_window())
 
 btn_finish = tk.Button(window, text="Quitter", font=("Arial", 15))
 btn_finish.grid(row=2+ 2*len(a_exercise)//3 , column=1)

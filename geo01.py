@@ -26,7 +26,6 @@ exercise="GEO01"
 nbtrials=0 #number of total trials
 nbsuccess=0 #number of successfull trials
 
-
 # on canvas click, check if succeded or failed
 def canvas_click(event):
     global mycircle, nbtrials, nbsuccess
@@ -88,8 +87,21 @@ def next_point(event):
 
 
 def save_game(event):
-    # TODO
-    print("dans save")
+    global start_date, pseudo, exercise, nbtrials, nbsuccess
+
+    # pour obtenir le temp dernier
+    end_time = datetime.datetime.now()
+
+    # pour calculer le temps de partie
+    duration_seconds = (end_time - start_date).total_seconds()
+
+    pseudo = entry_pseudo.get()
+
+    # insert bd
+    database.save_game_result(pseudo, exercise, duration_seconds, nbtrials, nbsuccess)
+
+    window_geo01.destroy()
+
 
 
 def display_timer():
@@ -102,7 +114,7 @@ def display_timer():
 
 def open_window_geo_01(window):
     # window = tk.Tk()
-    global window_geo01, hex_color, lbl_title, lbl_duration, lbl_result, lbl_target, canvas, start_date
+    global window_geo01, hex_color, lbl_title, lbl_duration, lbl_result, lbl_target, canvas, start_date, entry_pseudo
     window_geo01 = tk.Toplevel(window)
 
     window_geo01.title("Exercice de géométrie")
@@ -138,6 +150,10 @@ def open_window_geo_01(window):
 
     btn_finish = tk.Button(window_geo01, text="Terminer", font=("Arial", 15))
     btn_finish.grid(row=6, column=0, columnspan=6)
+
+    # TODO button-1 clic a gauche souris
+    # bind pour relier un function sur un bouton
+    btn_finish.bind("<Button-1>", lambda event: (save_game(event)))
 
     # first call of next_point
     next_point(event=None)
