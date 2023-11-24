@@ -15,7 +15,6 @@ def create_result_window():
 
     #pour gere la taille de fenetre
     window.geometry("1300x700")
-
     
 
     #titre
@@ -59,7 +58,9 @@ def create_result_window():
 
     # pour cree Treeview
     tree = ttk.Treeview(window, height=20)
-    tree["columns"] = ("Élevé", "Date Heure", "Temps", "Exercice", "NB OK", "Nb Trial","% réussi")
+    tree["columns"] = ("Élevé", "Date Heure", "Temps", "Exercice", "NB OK", "Nb Trial", "% réussi")
+    tree.column("#0", width=0, stretch=tk.NO)
+    tree.column
 
     # definir les tittre et leur taille et styles
     for col in tree["columns"]:
@@ -103,14 +104,34 @@ def calculate_percentage(nb_ok, nb_trial):
 
 
 
+def colorize_percentage(percentage):
+    #pour definir les coleurs avec %
+    if percentage < 25:
+        return 'red'
+    elif percentage < 50:
+        return 'orange'
+    elif percentage < 75:
+        return 'yellow'
+    else:
+        return 'green'
+
+
+def insert_data_into_treeview(tree, values, percentage):
+    color = colorize_percentage(percentage)
+    row_id = tree.insert('', 'end', values=(*values, ''))
+    tree.set(row_id, column="% réussi", value=f"{percentage} %")
+    tree.tag_configure(row_id, background=color)
+    tree.item(row_id, tags=(row_id,))
 
 def voir_resultat():
-    results = database.get_game_results()  # pour prendre les resultat depuis bd
+    # connection de bd pour obtenir les donnees
+    results = database.get_game_results()
     for result in results:
-        nb_ok = result[4]  # pour definir index de NB OK
-        nb_trial = result[5]  # pour definir index de Nb Trial
+        nb_ok = result[4]
+        nb_trial = result[5]
         percentage = calculate_percentage(nb_ok, nb_trial)
-        tree.insert("", "end", values=(*result, percentage))  # ajouter pourcentage a la fin de tableau
+        insert_data_into_treeview(tree, result, percentage)
+
 
 
 def voir_total():
