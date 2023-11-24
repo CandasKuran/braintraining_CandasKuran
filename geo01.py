@@ -151,7 +151,7 @@ def open_window_geo_01(window):
     btn_finish = tk.Button(window_geo01, text="Terminer", font=("Arial", 15))
     btn_finish.grid(row=6, column=0, columnspan=6)
 
-    # TODO button-1 clic a gauche souris
+    # button-1 clic a gauche souris
     # bind pour relier un function sur un bouton
     btn_finish.bind("<Button-1>", lambda event: (save_game(event)))
 

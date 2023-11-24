@@ -117,7 +117,3 @@ def voir_total():
     #...
     pass
 
-
-
-
-create_result_window()
