@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="@localhost">
+  <database-model serializer="dbm" dbms="MARIADB" family-id="MARIADB" format-version="4.49">
+    <root id="1">
+      <DefaultCasing>lower/lower</DefaultCasing>
+      <DefaultEngine>InnoDB</DefaultEngine>
+      <ServerVersion>11.2.1</ServerVersion>
+    </root>
+    <schema id="2" parent="1" name="information_schema">
+      <CollationName>utf8mb3_general_ci</CollationName>
+    </schema>
+    <schema id="3" parent="1" name="141projet">
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </schema>
+    <schema id="4" parent="1" name="141projets2">
+      <CollationName>latin1_swedish_ci</CollationName>
+    </schema>
+    <schema id="5" parent="1" name="classicmodels">
+      <CollationName>latin1_swedish_ci</CollationName>
+    </schema>
+    <schema id="6" parent="1" name="classroom_cleanings">
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </schema>
+    <schema id="7" parent="1" name="cpnv">
+      <CollationName>latin1_swedish_ci</CollationName>
+    </schema>
+    <schema id="8" parent="1" name="exam">
+      <CollationName>latin1_swedish_ci</CollationName>
+    </schema>
+    <schema id="9" parent="1" name="madbpy">
+      <IntrospectionTimestamp>2023-12-01.13:13:39</IntrospectionTimestamp>
+      <LocalIntrospectionTimestamp>2023-12-01.11:13:39</LocalIntrospectionTimestamp>
+      <CollationName>latin1_swedish_ci</CollationName>
+    </schema>
+    <schema id="10" parent="1" name="mybussines">
+      <CollationName>latin1_swedish_ci</CollationName>
+    </schema>
+    <schema id="11" parent="1" name="mysql">
+      <CollationName>latin1_swedish_ci</CollationName>
+    </schema>
+    <schema id="12" parent="1" name="performance_schema">
+      <CollationName>utf8mb3_general_ci</CollationName>
+    </schema>
+    <schema id="13" parent="1" name="sys">
+      <CollationName>utf8mb3_general_ci</CollationName>
+    </schema>
+    <schema id="14" parent="1" name="testex">
+      <CollationName>latin1_swedish_ci</CollationName>
+    </schema>
+    <schema id="15" parent="1" name="world">
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </schema>
+    <table id="16" parent="9" name="partie">
+      <Engine>InnoDB</Engine>
+      <CollationName>latin1_swedish_ci</CollationName>
+    </table>
+    <column id="17" parent="16" name="id">
+      <AutoIncrement>31</AutoIncrement>
+      <DasType>int(11)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="18" parent="16" name="Exercise">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="19" parent="16" name="Pseudo">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="20" parent="16" name="DateHour">
+      <DasType>datetime|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="21" parent="16" name="Duration">
+      <DasType>time|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="22" parent="16" name="NbTrials">
+      <DasType>int(11)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <column id="23" parent="16" name="NbOk">
+      <DasType>int(11)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+    </column>
+    <index id="24" parent="16" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="25" parent="16" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+  </database-model>
+</dataSource>
