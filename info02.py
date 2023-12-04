@@ -47,9 +47,20 @@ def next(event):
 
 
 def save_game(event):
-    print("dans save")
-    # TODO
+    global start_date, pseudo, exercise, nbtrials, nbsuccess
 
+    # pour obtenir le temp dernier
+    end_time = datetime.datetime.now()
+
+    # pour calculer le temps de partie
+    duration_seconds = (end_time - start_date).total_seconds()
+
+    pseudo = entry_pseudo.get()
+
+    # insert bd
+    database.save_game_result(pseudo, exercise, duration_seconds, nbtrials, nbsuccess)
+
+    window_info02.destroy()
 
 def test(event):
     global n2, nbsuccess, nbtrials
@@ -77,7 +88,7 @@ def display_timer():
 
 
 def open_window_info_02(window):
-    global window_info02, lbl_duration, lbl_result, entry_n2, label_u2, label_n1, hex_color, start_date
+    global window_info02, lbl_duration, lbl_result, entry_n2, label_u2, label_n1, hex_color, start_date,entry_pseudo
     window_info02 = tk.Toplevel(window)
 
     #window_info02 = tk.Tk()
@@ -117,6 +128,10 @@ def open_window_info_02(window):
 
     btn_finish = tk.Button(window_info02, text="Terminer", font=("Arial", 15))
     btn_finish.grid(row=6, column=0, columnspan=6)
+
+    # button-1 clic a gauche souris
+    # bind pour relier un function sur un bouton
+    btn_finish.bind("<Button-1>", lambda event: (save_game(event)))
 
     start_date = datetime.datetime.now()
     display_timer()

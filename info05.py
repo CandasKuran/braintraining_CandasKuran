@@ -191,8 +191,20 @@ def sl_v(event):
 
 
 def save_game(event):
-    print("dans save")
-    #TODO
+    global start_date, pseudo, exercise, nbtrials, nbsuccess
+
+    # pour obtenir le temp dernier
+    end_time = datetime.datetime.now()
+
+    # pour calculer le temps de partie
+    duration_seconds = (end_time - start_date).total_seconds()
+
+    pseudo = entry_pseudo.get()
+
+    # insert bd
+    database.save_game_result(pseudo, exercise, duration_seconds, nbtrials, nbsuccess)
+
+    window_info05.destroy()
 
 
 def display_timer():
@@ -204,7 +216,7 @@ def display_timer():
 
 
 def open_window_info_05(window):
-    global window_info05, lbl_duration, lbl_result, hex_color, start_date, slider_r, slider_g, slider_b, slider_v, entry_response, canvas
+    global window_info05, lbl_duration, lbl_result, hex_color, start_date, slider_r, slider_g, slider_b, slider_v, entry_response, canvas,entry_pseudo
     window_info05 = tk.Toplevel(window)
     window_info05.title("La couleur perdue")
     window_info05.geometry("1100x900")
@@ -259,6 +271,9 @@ def open_window_info_05(window):
     btn_finish = tk.Button(window_info05, text="Terminer", font=("Arial", 15))
     btn_finish.grid(row=8, column=2)
 
+    # button-1 clic a gauche souris
+    # bind pour relier un function sur un bouton
+    btn_finish.bind("<Button-1>", lambda event: (save_game(event)))
 
     # first call of next_point
     display_wheel_color()
