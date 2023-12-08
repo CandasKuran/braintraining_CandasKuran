@@ -28,7 +28,9 @@ nbsuccess=0 #number of successfull trials
 
 # on canvas click, check if succeded or failed
 def canvas_click(event):
-    global mycircle, nbtrials, nbsuccess
+    global mycircle, nbtrials, nbsuccess, entry_pseudo
+
+    pseudo = entry_pseudo.get()
     # x et y clicked
     click_x = (event.x - l/2) / scale
     click_y = -(event.y - h/2) / scale

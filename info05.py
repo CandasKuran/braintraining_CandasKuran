@@ -130,7 +130,9 @@ def dist_color(c1,c2):
 
 #check if the color given in hex is near (max dist=5)
 def test(event):
-    global nbsuccess, nbtrials
+    global nbsuccess, nbtrials ,entry_pseudo
+
+    pseudo = entry_pseudo.get()
     # Fonction pour tester si la valeur est juste
     txt_color = entry_response.get().replace(" ", "") #delete spaces
     rgb_entry=hex_to_rgb(txt_color)

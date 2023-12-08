@@ -91,6 +91,8 @@ def open_window_info_02(window):
     global window_info02, lbl_duration, lbl_result, entry_n2, label_u2, label_n1, hex_color, start_date,entry_pseudo
     window_info02 = tk.Toplevel(window)
 
+
+
     #window_info02 = tk.Tk()
     window_info02.title("Conversion d'unités")
     window_info02.geometry("1100x900")
@@ -111,6 +113,7 @@ def open_window_info_02(window):
     # entry_pseudo.pack(ipadx=2, ipady=10, padx=5,pady=5)
     entry_pseudo.grid(row=1, column=1)
 
+    pseudo = entry_pseudo.get()
     lbl_result = tk.Label(window_info02, text=f"{pseudo}  Essais réussis : 0/0", font=("Arial", 15))
     lbl_result.grid( row=1, column=2,columnspan=3, ipady=5, padx=20,pady=20)
 
@@ -137,6 +140,7 @@ def open_window_info_02(window):
     display_timer()
     # first call of next_point
     next(event=None)
+
 
     # binding actions (entry & buttons)
     entry_n2.bind("<Return>", test)

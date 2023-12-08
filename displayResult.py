@@ -5,9 +5,12 @@ from tkinter import messagebox  # Pour la fenêtre pop-up
 from database import delete_game_result
 
 tree = None  # Global
-donnees_chargees = False  # Pour suivre si les données ont été chargées
+
 entry_pseudo = None
 entry_exercise = None
+global derniers_filtres,donnees_chargees
+derniers_filtres = {"pseudo": "", "exercise": ""}
+donnees_chargees = False  # Pour suivre si les données ont été chargées
 
 
 
@@ -59,13 +62,19 @@ def create_result_window():
     btn_total = tk.Button(window, text="Total", command=lambda: voir_total())
     btn_total.grid(row=21, padx=(0,0))
 
+    # bouton "nouvelle resultat"
+    btn_ajouter = tk.Button(window, text="Ajouter", command=ajouter_resultat)
+    btn_ajouter.grid(row=2, column=3, padx=(0, 5))
+
     #les titre de tableau
+
+
 
     # pour cree Treeview
     tree = ttk.Treeview(window, height=20)
     tree["columns"] = ("Éléve", "Date Heure", "Temps", "Exercice", "NB OK", "Nb Trial", "% réussi")
     tree.column("#0", width=0, stretch=tk.NO)
-    tree.column
+    # tree.column
 
     # definir les tittre et leur taille et styles
     for col in tree["columns"]:
@@ -74,16 +83,17 @@ def create_result_window():
 
     tree.grid(row=3, column=0, columnspan=8)
 
+
     # partie total
 
-    # Toplam sonuçlar için başlık etiketleri
+    # total
     tk.Label(window, text="NbLignes").grid(row=4, column=0, sticky='w')
     tk.Label(window, text="Temps total").grid(row=4, column=1, sticky='w')
     tk.Label(window, text="Nb OK").grid(row=4, column=2, sticky='w')
     tk.Label(window, text="Nb Total").grid(row=4, column=3, sticky='w')
     tk.Label(window, text="% Total").grid(row=4, column = 4, sticky="w")
 
-    # Toplam sonuçlar için değer etiketleri
+    # total
     lbl_nblignes = tk.Label(window, text="")
     lbl_nblignes.grid(row=5, column=0, sticky='w')
 
@@ -119,6 +129,8 @@ def insert_data_into_treeview(tree, values, percentage):
     tree.set(row_id, column="% réussi", value=f"{percentage} %")
     tree.tag_configure(row_id, background=color)
     tree.item(row_id, tags=(row_id,))
+
+
 
 def supprimer_resultat():
     selected_item = tree.selection()[0]  # pour obtenir la selection
@@ -237,37 +249,77 @@ def colorize_percentage(percentage):
 
 
 
+# def voir_resultat():
+#     global donnees_chargees  # Déclarer la variable globale pour suivre si les données sont déjà chargées
+#     pseudo = entry_pseudo.get().strip()
+#     exercise = entry_exercise.get().strip()
+#
+#     # Récupérer les résultats de la base de données en fonction des critères pseudo et exercise
+#     resultats = database.get_game_results(pseudo=pseudo, exercise=exercise)
+#
+#     # Si aucun résultat n'est trouvé et que pseudo ou exercice est spécifié, afficher un message
+#     if not resultats:
+#         if pseudo or exercise:
+#             messagebox.showinfo("Information", "Aucun enregistrement trouvé pour les critères donnés.")
+#         else:
+#             # Si pseudo et exercice sont vides et que les données ont déjà été chargées, afficher un message
+#             if donnees_chargees:
+#                 messagebox.showinfo("Information", "Les données sont déjà à jour.")
+#                 return
+#         donnees_chargees = False
+#         return
+#
+#     # Afficher les résultats dans le Treeview
+#     tree.delete(*tree.get_children())  # Nettoyer les données existantes dans le Treeview
+#     for resultat in resultats:
+#         nb_ok = resultat[4]
+#         nb_essai = resultat[5]
+#         pourcentage = calculate_percentage(nb_ok, nb_essai)
+#         insert_data_into_treeview(tree, resultat, pourcentage)
+#
+#     donnees_chargees = True  # Marquer que les nouvelles données sont chargées
+#
+
+
+
 def voir_resultat():
-    global donnees_chargees  # Déclarer la variable globale pour suivre si les données sont déjà chargées
+    global donnees_chargees, derniers_filtres
     pseudo = entry_pseudo.get().strip()
     exercise = entry_exercise.get().strip()
 
-    # Récupérer les résultats de la base de données en fonction des critères pseudo et exercise
+    # Vérifier si les filtres sont identiques aux derniers utilisés et si les données ont déjà été chargées
+    if pseudo == derniers_filtres["pseudo"] and exercise == derniers_filtres["exercise"] and donnees_chargees:
+        messagebox.showinfo("Information", "Les données sont déjà à jour.")
+        return
+
+    # Réinitialiser les données si les filtres ont changé
+    if pseudo != derniers_filtres["pseudo"] or exercise != derniers_filtres["exercise"]:
+        donnees_chargees = False
+
+    # Mémoriser les filtres actuels
+    derniers_filtres["pseudo"] = pseudo
+    derniers_filtres["exercise"] = exercise
+
+    # Récupérer les résultats de la base de données
     resultats = database.get_game_results(pseudo=pseudo, exercise=exercise)
 
-    # Si aucun résultat n'est trouvé et que pseudo ou exercice est spécifié, afficher un message
+    # Afficher un message si aucun résultat n'est trouvé
     if not resultats:
-        if pseudo or exercise:
-            messagebox.showinfo("Information", "Aucun enregistrement trouvé pour les critères donnés.")
-        else:
-            # Si pseudo et exercice sont vides et que les données ont déjà été chargées, afficher un message
-            if donnees_chargees:
-                messagebox.showinfo("Information", "Les données sont déjà à jour.")
-                return
+        messagebox.showinfo("Information", "Aucun enregistrement trouvé pour les critères donnés.")
         donnees_chargees = False
         return
 
-    # Afficher les résultats dans le Treeview
-    tree.delete(*tree.get_children())  # Nettoyer les données existantes dans le Treeview
+    # Nettoyer les données existantes dans le Treeview et afficher les nouveaux résultats
+    tree.delete(*tree.get_children())
     for resultat in resultats:
+        # Traiter chaque résultat et l'ajouter au Treeview
         nb_ok = resultat[4]
         nb_essai = resultat[5]
         pourcentage = calculate_percentage(nb_ok, nb_essai)
         insert_data_into_treeview(tree, resultat, pourcentage)
 
-    donnees_chargees = True  # Marquer que les nouvelles données sont chargées
-
-
+    # Marquer que les données sont chargées
+    donnees_chargees = True
 
 
 def voir_total():
@@ -297,5 +349,53 @@ def voir_total():
     lbl_pourcentageTotal.config(text=f"{total_pourcentage:.2f}")
 
 
+def ajouter_resultat():
+    # pour creer nouvelle fenetre
+    ajout_window = tk.Toplevel()
+    ajout_window.title("Ajouter un résultat")
 
-create_result_window()
+    # input pour "pseudo"
+    lbl_pseudo = tk.Label(ajout_window, text="Pseudo:")
+    lbl_pseudo.pack()
+    entry_pseudo = tk.Entry(ajout_window)
+    entry_pseudo.pack()
+
+    # input pour 'Exercice'
+    lbl_exercice = tk.Label(ajout_window, text="Exercice:")
+    lbl_exercice.pack()
+    entry_exercice = tk.Entry(ajout_window)
+    entry_exercice.pack()
+
+    # input pour 'Temps'
+    lbl_temps = tk.Label(ajout_window, text="Temps:")
+    lbl_temps.pack()
+    entry_temps = tk.Entry(ajout_window)
+    entry_temps.pack()
+
+    # input pour 'NB OK'
+    lbl_nb_ok = tk.Label(ajout_window, text="NB OK:")
+    lbl_nb_ok.pack()
+    entry_nb_ok = tk.Entry(ajout_window)
+    entry_nb_ok.pack()
+
+    # input pour 'Nb Trial'
+    lbl_nb_trial = tk.Label(ajout_window, text="Nb Trial:")
+    lbl_nb_trial.pack()
+    entry_nb_trial = tk.Entry(ajout_window)
+    entry_nb_trial.pack()
+
+    # pour engregistrer nouvelle resultat
+    btn_ajouter = tk.Button(ajout_window, text="Ajouter résultat", command=lambda: enregistrer_resultat(
+        entry_pseudo.get(),
+        entry_exercice.get(),
+        entry_temps.get(),
+        entry_nb_ok.get(),
+        entry_nb_trial.get()
+    ))
+    btn_ajouter.pack()
+
+def enregistrer_resultat(pseudo, exercice, temps, nb_ok, nb_trial):
+    # envoyer à le bd
+    database.save_game_result(pseudo, exercice, temps, nb_ok, nb_trial)
+    refresh_treeview()
+
