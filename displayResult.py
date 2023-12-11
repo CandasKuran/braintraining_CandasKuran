@@ -478,4 +478,3 @@ def format_temps_valide(temps_str):
     except (ValueError, AssertionError):
         return False
 
-create_result_window()
