@@ -5,4 +5,4 @@
 
 
 
-# Vous n'avez pas besoin d'un fichier SQL supplémentaire pour créer une base de données car le programme crée automatiquement une base de données et une table lorsque vous démarrez le programme. 
+# Vous n'avez pas besoin d'un fichier SQL supplémentaire pour créer une base de données car le programme crée automatiquement une base de données et une table lorsque vous démarrez le programme.
