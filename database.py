@@ -132,3 +132,17 @@ def update_game_result(Pseudo, Exercise, DateHour, Duration, NbOk, NbTrials, new
 
 
 
+def get_all_exercise_names():
+    conn, cursor = get_db_connection()
+
+    query = "SELECT DISTINCT Exercise FROM partie"
+    cursor.execute(query)
+    exercises = cursor.fetchall()
+
+    exercise_names = [exercise[0] for exercise in exercises]
+    return exercise_names
+
+    cursor.close()
+    conn.close()
+
+

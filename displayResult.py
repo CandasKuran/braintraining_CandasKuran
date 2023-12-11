@@ -3,6 +3,9 @@ from tkinter import ttk
 import database
 from tkinter import messagebox  # Pour la fenêtre pop-up
 from database import delete_game_result
+from database import get_game_results
+from database import get_all_exercise_names
+
 
 tree = None  # Global
 
@@ -15,14 +18,14 @@ donnees_chargees = False  # Pour suivre si les données ont été chargées
 
 
 def create_result_window():
-    global tree,entry_pseudo,entry_exercise,lbl_nblignes, lbl_tempTotal, lbl_nbOK, lbl_nbTotal, lbl_pourcentageTotal #pour definir global
+    global tree,entry_pseudo,entry_exercise,lbl_nblignes, lbl_tempTotal, lbl_nbOK, lbl_nbTotal, lbl_pourcentageTotal , entry_date_debut, entry_date_fin#pour definir global
     #cree nouvelle fenetre avec titre
     window = tk.Tk()
     window.title("TRAINING : AFFICHAGE")
     window.configure(bg='#8aded5')
 
     #pour gere la taille de fenetre
-    window.geometry("1300x700")
+    window.geometry("1300x700+300+150")
 
 
     #titre
@@ -133,32 +136,42 @@ def insert_data_into_treeview(tree, values, percentage):
 
 
 def supprimer_resultat():
-    selected_item = tree.selection()[0]  # pour obtenir la selection
+    try:
+        selected_item = tree.selection()[0]  # Sélectionner l'élément
+    except IndexError:
+        messagebox.showwarning("Attention", "Veuillez sélectionner la ligne à supprimer.")
+        return
 
-    pseudo = tree.item(selected_item, 'values')[0] #pour pseudo
-    dateHour = tree.item(selected_item, 'values')[1] #pour date
-    duration = tree.item(selected_item, 'values')[2] #pour temps
-    exercise = tree.item(selected_item, 'values')[3] #pour exercise
-    nbOk = tree.item(selected_item, 'values')[4] #pour nbOk
-    nbTrials = tree.item(selected_item, 'values')[5] #pour nbTrials
+    pseudo = tree.item(selected_item, 'values')[0]
+    dateHour = tree.item(selected_item, 'values')[1]
+    duration = tree.item(selected_item, 'values')[2]
+    exercise = tree.item(selected_item, 'values')[3]
+    nbOk = tree.item(selected_item, 'values')[4]
+    nbTrials = tree.item(selected_item, 'values')[5]
 
-    delete_game_result(pseudo,exercise,dateHour,duration,nbOk,nbTrials)
+    delete_game_result(pseudo, exercise, dateHour, duration, nbOk, nbTrials)
     tree.delete(selected_item)
-
-
 
 
 
 def modifier_resultat():
     global update_window
-    selected_item = tree.selection()[0]
+
+    try:
+        selected_item = tree.selection()[0]
+    except IndexError:
+        messagebox.showwarning("Attention", "Veuillez sélectionner la ligne à modifier.")
+        return
+
     current_values = tree.item(selected_item, 'values')
 
     # pour ouvrir nouvelle fenetre
     update_window = tk.Toplevel()
     update_window.title("Modifier un résultat")
 
-    update_window.geometry("400x200")
+    update_window.geometry("400x200+700+350")
+    # Force le focus sur cette fenêtre
+    update_window.grab_set()
 
     # input pour Duration
     lbl_duration = tk.Label(update_window, text="Temps:")
@@ -247,79 +260,94 @@ def colorize_percentage(percentage):
         return 'green'
 
 
-
-
 # def voir_resultat():
-#     global donnees_chargees  # Déclarer la variable globale pour suivre si les données sont déjà chargées
+#     global donnees_chargees, derniers_filtres
 #     pseudo = entry_pseudo.get().strip()
 #     exercise = entry_exercise.get().strip()
 #
-#     # Récupérer les résultats de la base de données en fonction des critères pseudo et exercise
+#     # Vérifier si les filtres sont identiques aux derniers utilisés et si les données ont déjà été chargées
+#     if pseudo == derniers_filtres["pseudo"] and exercise == derniers_filtres["exercise"] and donnees_chargees:
+#         messagebox.showinfo("Information", "Les données sont déjà à jour.")
+#         return
+#
+#     # Réinitialiser les données si les filtres ont changé
+#     if pseudo != derniers_filtres["pseudo"] or exercise != derniers_filtres["exercise"]:
+#         donnees_chargees = False
+#
+#     # Mémoriser les filtres actuels
+#     derniers_filtres["pseudo"] = pseudo
+#     derniers_filtres["exercise"] = exercise
+#
+#     # Récupérer les résultats de la base de données
 #     resultats = database.get_game_results(pseudo=pseudo, exercise=exercise)
 #
-#     # Si aucun résultat n'est trouvé et que pseudo ou exercice est spécifié, afficher un message
+#     # Afficher un message si aucun résultat n'est trouvé
 #     if not resultats:
-#         if pseudo or exercise:
-#             messagebox.showinfo("Information", "Aucun enregistrement trouvé pour les critères donnés.")
-#         else:
-#             # Si pseudo et exercice sont vides et que les données ont déjà été chargées, afficher un message
-#             if donnees_chargees:
-#                 messagebox.showinfo("Information", "Les données sont déjà à jour.")
-#                 return
+#         messagebox.showinfo("Information", "Aucun enregistrement trouvé pour les critères donnés.")
 #         donnees_chargees = False
 #         return
 #
-#     # Afficher les résultats dans le Treeview
-#     tree.delete(*tree.get_children())  # Nettoyer les données existantes dans le Treeview
+#     # Nettoyer les données existantes dans le Treeview et afficher les nouveaux résultats
+#     tree.delete(*tree.get_children())
 #     for resultat in resultats:
+#         # Traiter chaque résultat et l'ajouter au Treeview
 #         nb_ok = resultat[4]
 #         nb_essai = resultat[5]
 #         pourcentage = calculate_percentage(nb_ok, nb_essai)
 #         insert_data_into_treeview(tree, resultat, pourcentage)
 #
-#     donnees_chargees = True  # Marquer que les nouvelles données sont chargées
-#
-
-
+#     # Marquer que les données sont chargées
+#     donnees_chargees = True
 
 def voir_resultat():
     global donnees_chargees, derniers_filtres
+
+    # Récupérer les valeur d'inputs de champ de saisie
     pseudo = entry_pseudo.get().strip()
     exercise = entry_exercise.get().strip()
+    date_debut = entry_date_debut.get().strip()
+    date_fin = entry_date_fin.get().strip()
 
-    # Vérifier si les filtres sont identiques aux derniers utilisés et si les données ont déjà été chargées
-    if pseudo == derniers_filtres["pseudo"] and exercise == derniers_filtres["exercise"] and donnees_chargees:
+
+    # Vérifier si les filtres ont changé, y compris les dates
+    if (pseudo == derniers_filtres["pseudo"] and
+        exercise == derniers_filtres["exercise"] and
+        date_debut == derniers_filtres.get("date_debut", "") and
+        date_fin == derniers_filtres.get("date_fin", "") and
+        donnees_chargees):
         messagebox.showinfo("Information", "Les données sont déjà à jour.")
         return
 
-    # Réinitialiser les données si les filtres ont changé
-    if pseudo != derniers_filtres["pseudo"] or exercise != derniers_filtres["exercise"]:
+    # Recharger les données si un des filtres a changé
+    if (pseudo != derniers_filtres["pseudo"] or
+        exercise != derniers_filtres["exercise"] or
+        date_debut != derniers_filtres.get("date_debut", "") or
+        date_fin != derniers_filtres.get("date_fin", "")):
         donnees_chargees = False
 
-    # Mémoriser les filtres actuels
-    derniers_filtres["pseudo"] = pseudo
-    derniers_filtres["exercise"] = exercise
+    # Enregistrer les nouveaux filtres
+    derniers_filtres.update({"pseudo": pseudo, "exercise": exercise, "date_debut": date_debut, "date_fin": date_fin})
 
-    # Récupérer les résultats de la base de données
-    resultats = database.get_game_results(pseudo=pseudo, exercise=exercise)
+    # Obtenir les résultats de la bd
+    resultats = database.get_game_results(pseudo=pseudo, exercise=exercise, start_date=date_debut, end_date=date_fin)
 
-    # Afficher un message si aucun résultat n'est trouvé
+    # Vérifier s'il y a des résultats
     if not resultats:
-        messagebox.showinfo("Information", "Aucun enregistrement trouvé pour les critères donnés.")
+        messagebox.showwarning("Erreur", "Aucun enregistrement trouvé pour les critères donnés.")
         donnees_chargees = False
         return
 
-    # Nettoyer les données existantes dans le Treeview et afficher les nouveaux résultats
+    # Nettoyer les données existantes dans Treeview et afficher les nouveaux résultats
     tree.delete(*tree.get_children())
     for resultat in resultats:
-        # Traiter chaque résultat et l'ajouter au Treeview
         nb_ok = resultat[4]
         nb_essai = resultat[5]
         pourcentage = calculate_percentage(nb_ok, nb_essai)
         insert_data_into_treeview(tree, resultat, pourcentage)
 
-    # Marquer que les données sont chargées
+    # Marquer que les données sont deja été chargees
     donnees_chargees = True
+
 
 
 def voir_total():
@@ -350,9 +378,15 @@ def voir_total():
 
 
 def ajouter_resultat():
+    global ajout_window
     # pour creer nouvelle fenetre
     ajout_window = tk.Toplevel()
     ajout_window.title("Ajouter un résultat")
+
+    ajout_window.geometry("400x250+700+350")
+
+    # Force le focus sur cette fenêtre
+    ajout_window.grab_set()
 
     # input pour "pseudo"
     lbl_pseudo = tk.Label(ajout_window, text="Pseudo:")
@@ -394,8 +428,54 @@ def ajouter_resultat():
     ))
     btn_ajouter.pack()
 
+
+
+
 def enregistrer_resultat(pseudo, exercice, temps, nb_ok, nb_trial):
+    global ajout_window
+
+    # Vérifier si l'exercice existe
+    if not exercice_existe(exercice):
+        existing_exercises = get_all_exercise_names()
+        messagebox.showwarning("Erreur", f"Cet exercice n'existe pas. Les exercices qui sont disponibles dans le bd: {', '.join(existing_exercises)}")
+        return
+
+    # Vérifier le format de temps
+    if not format_temps_valide(temps):
+        messagebox.showwarning("Erreur", "Format de temps invalide. Veuillez entrer le format HH:MM:SS.")
+        return
+
     # envoyer à le bd
     database.save_game_result(pseudo, exercice, temps, nb_ok, nb_trial)
     refresh_treeview()
 
+    messagebox.showinfo("Succès", "Données ajoutées avec succès !")
+
+    ajout_window.destroy()
+
+
+def exercice_existe(exercice):
+    """
+    Vérifie si un exercice donné existe dans la base de données.
+    """
+    # Utiliser la fonction get_game_results pour vérifier l'existence de l'exercice
+    resultats = get_game_results(exercise=exercice)
+
+    # Si aucun résultat n'est retourné, l'exercice n'existe pas
+    return len(resultats) > 0
+
+
+
+def format_temps_valide(temps_str):
+    """
+    Vérifie si une chaîne de temps donnée est dans le format correct (HH:MM:SS).
+
+    """
+    try:
+        heures, minutes, secondes = map(int, temps_str.split(':'))
+        assert 0 <= heures <= 23 and 0 <= minutes <= 59 and 0 <= secondes <= 59
+        return True
+    except (ValueError, AssertionError):
+        return False
+
+create_result_window()
