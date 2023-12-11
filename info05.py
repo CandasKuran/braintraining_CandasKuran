@@ -147,7 +147,7 @@ def test(event):
     else:
         window_info05.configure(bg="red")
         window_info05.update()
-    #TODO ###############################################################################
+
     lbl_result.configure(text=f"{pseudo} Essais réussis : {nbsuccess} / {nbtrials}")
 
 

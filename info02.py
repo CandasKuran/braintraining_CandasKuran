@@ -114,7 +114,7 @@ def open_window_info_02(window):
     entry_pseudo.grid(row=1, column=1)
 
 
-    #TODO #############################################################################################
+
 
     lbl_result = tk.Label(window_info02, text=f"{pseudo}  Essais réussis : 0/0", font=("Arial", 15))
     lbl_result.grid( row=1, column=2,columnspan=3, ipady=5, padx=20,pady=20)
