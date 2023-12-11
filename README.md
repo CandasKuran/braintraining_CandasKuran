@@ -1,4 +1,4 @@
-# braintraining_forstudents
+# braintraining
 
 Vous devez mettre à jour les paramètres de la fonction de connexion dans le fichier database.py (tels que le port ou le mot de passe etc.). 
 
