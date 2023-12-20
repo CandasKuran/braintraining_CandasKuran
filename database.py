@@ -1,5 +1,6 @@
 import mysql.connector
-
+from loginPage import *
+import hashlib
 def get_db_connection():
     # Établir une connexion au serveur MySQL
     conn = mysql.connector.connect(
@@ -31,8 +32,18 @@ def get_db_connection():
         
     );
     ''')
-    return conn, cursor
 
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS utilisateurs (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        pseudo VARCHAR(255) NOT NULL,
+        mot_de_passe VARCHAR(255) NOT NULL,
+        niveau_de_droit INT NOT NULL CHECK (niveau_de_droit IN (1, 2))
+    );
+    ''')
+
+    return conn, cursor
 def save_game_result(pseudo, exercise, duration, nb_trials, nb_success):
     # connection db
     conn, cursor = get_db_connection()
@@ -145,4 +156,69 @@ def get_all_exercise_names():
     cursor.close()
     conn.close()
 
+def insert_user(username, raw_password, role):
+
+    conn, cursor = get_db_connection()
+
+    try:
+        #verifier le nom d'utilisateur
+        cursor.execute("SELECT COUNT(*) FROM utilisateurs WHERE pseudo = %s", (username,))
+        if cursor.fetchone()[0] == 0:
+            # insert les donnees
+            hashed_password = hash_password(raw_password)  # pour chiffrement
+            cursor.execute("INSERT INTO utilisateurs (pseudo, mot_de_passe, niveau_de_droit) VALUES (%s, %s, %s)",
+                           (username, hashed_password, 1 if role == 'student' else 2))
+            conn.commit()
+            return True
+        else:
+            return False  # il est deja existe dans bd
+    except mysql.connector.Error as err:
+        print("Error:", err)
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# verifier les users pour login
+
+def check_user(username, raw_password):
+    conn, cursor = get_db_connection()
+    try:
+        hashed_password = hash_password(raw_password)
+        cursor.execute("SELECT pseudo, niveau_de_droit FROM utilisateurs WHERE pseudo = %s AND mot_de_passe = %s", (username, hashed_password))
+        user = cursor.fetchone()
+        # on fait return user parce qu'on va utiliser pour la session actuelle
+        if user:
+            return user[0], user[1]
+        else:
+            return None
+    except mysql.connector.Error as err:
+        print("Database error:", err)
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# database.py
+
+def assign_teacher_role(username):
+    conn, cursor = get_db_connection()
+    try:
+        # verifier l'utilisateur
+        cursor.execute("SELECT COUNT(*) FROM utilisateurs WHERE pseudo = %s", (username,))
+        if cursor.fetchone()[0] > 0:
+            # s'il est exist dans bd, on va modifier sa role
+            cursor.execute("UPDATE utilisateurs SET niveau_de_droit = 2 WHERE pseudo = %s", (username,))
+            conn.commit()
+            return True
+        else:
+            return False  # il existe pas
+    except mysql.connector.Error as err:
+        print("Error:", err)
+        return False
+    finally:
+        cursor.close()
+        conn.close()
 
