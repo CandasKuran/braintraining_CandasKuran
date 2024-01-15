@@ -201,8 +201,6 @@ def check_user(username, raw_password):
         conn.close()
 
 
-# database.py
-
 def assign_teacher_role(username):
     conn, cursor = get_db_connection()
     try:
@@ -214,7 +212,7 @@ def assign_teacher_role(username):
             conn.commit()
             return True
         else:
-            return False  # il existe pas
+            return False  # il n'existe pas
     except mysql.connector.Error as err:
         print("Error:", err)
         return False

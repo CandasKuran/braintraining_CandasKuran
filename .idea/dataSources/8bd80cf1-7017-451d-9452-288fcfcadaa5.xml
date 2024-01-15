@@ -28,8 +28,8 @@
       <CollationName>latin1_swedish_ci</CollationName>
     </schema>
     <schema id="9" parent="1" name="madbpy">
-      <IntrospectionTimestamp>2023-12-01.13:13:39</IntrospectionTimestamp>
-      <LocalIntrospectionTimestamp>2023-12-01.11:13:39</LocalIntrospectionTimestamp>
+      <IntrospectionTimestamp>2024-01-12.11:47:11</IntrospectionTimestamp>
+      <LocalIntrospectionTimestamp>2024-01-12.09:47:11</LocalIntrospectionTimestamp>
       <CollationName>latin1_swedish_ci</CollationName>
     </schema>
     <schema id="10" parent="1" name="mybussines">
@@ -54,48 +54,88 @@
       <Engine>InnoDB</Engine>
       <CollationName>latin1_swedish_ci</CollationName>
     </table>
-    <column id="17" parent="16" name="id">
-      <AutoIncrement>31</AutoIncrement>
+    <table id="17" parent="9" name="utilisateurs">
+      <Engine>InnoDB</Engine>
+      <CollationName>latin1_swedish_ci</CollationName>
+    </table>
+    <column id="18" parent="16" name="id">
+      <AutoIncrement>95</AutoIncrement>
       <DasType>int(11)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="18" parent="16" name="Exercise">
+    <column id="19" parent="16" name="Exercise">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="19" parent="16" name="Pseudo">
+    <column id="20" parent="16" name="Pseudo">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="20" parent="16" name="DateHour">
+    <column id="21" parent="16" name="DateHour">
       <DasType>datetime|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="21" parent="16" name="Duration">
+    <column id="22" parent="16" name="Duration">
       <DasType>time|0s</DasType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="22" parent="16" name="NbTrials">
+    <column id="23" parent="16" name="NbTrials">
       <DasType>int(11)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <column id="23" parent="16" name="NbOk">
+    <column id="24" parent="16" name="NbOk">
       <DasType>int(11)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>7</Position>
     </column>
-    <index id="24" parent="16" name="PRIMARY">
+    <index id="25" parent="16" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="25" parent="16" name="PRIMARY">
+    <key id="26" parent="16" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <check id="27" parent="17" name="niveau_de_droit">
+      <ColNames>niveau_de_droit</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <Predicate>`niveau_de_droit` in (1,2)</Predicate>
+    </check>
+    <column id="28" parent="17" name="id">
+      <AutoIncrement>11</AutoIncrement>
+      <DasType>int(11)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="29" parent="17" name="pseudo">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="30" parent="17" name="mot_de_passe">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="31" parent="17" name="niveau_de_droit">
+      <DasType>int(11)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <index id="32" parent="17" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="33" parent="17" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

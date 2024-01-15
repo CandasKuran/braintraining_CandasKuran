@@ -6,7 +6,7 @@ import hashlib
 current_user = None
 current_role = None
 def hash_password(password):
-    # SHA-256 hash algoritmasını kullanarak şifreyi hash'le
+    # avec algoritme de  SHA-256 on peut crypter le password
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
     return hashed_password
 

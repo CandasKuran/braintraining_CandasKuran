@@ -5,6 +5,7 @@ import info05
 import displayResult
 import loginPage
 import database
+
 # exercises array
 a_exercise = ["geo01", "info02", "info05"]
 albl_image = [None, None, None] # label (with images) array
@@ -14,6 +15,7 @@ a_title = [None, None, None] # array of title (ex: GEO01)
 dict_games = {"geo01": geo01.open_window_geo_01, "info02": info02.open_window_info_02, "info05": info05.open_window_info_05}
 
 
+# pour attiribuer le role
 def open_assign_teacher_window():
     rgb_color = (139, 201, 194)
     hex_color = '#%02x%02x%02x' % rgb_color
@@ -41,6 +43,7 @@ def open_assign_teacher_window():
               command=lambda: assign_teacher_role(student_name_entry.get(), password_entry.get(), assign_window)).pack()
 
 
+# verification d'utilisateur et psw
 def assign_teacher_role(student_name, password, window):
     # verification de psw de session actuelle
     if database.check_user(loginPage.current_user, password):
@@ -66,7 +69,7 @@ def show_main_menu():
     global window
     window = tk.Tk()
     window.title("Training, entrainement cérébral")
-    window.geometry("1100x650")
+    window.geometry("1400x650")
 
     # color définition
     rgb_color = (139, 201, 194)
@@ -79,7 +82,7 @@ def show_main_menu():
     lbl_title.grid(row=0, column=1, ipady=5, padx=40, pady=40)
 
     lbl_current_user = tk.Label(window,
-                                text=f"Session actuelle: {loginPage.current_user} en tant que {loginPage.current_role}",
+                                text=f"Session actuelle: '{loginPage.current_user}' en tant que {loginPage.current_role}",
                                 font=("Arial", 13, "bold"))
     lbl_current_user.grid(row=0, column=2, sticky="ne")
 
